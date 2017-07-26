@@ -1,0 +1,28 @@
+﻿@model PhotoCommunity.Models.UserPhotosViewModel
+
+@{
+    ViewBag.Title = "Фото пользователя";
+}
+
+<h4>@Model.user.Name</h4>
+@Html.Raw("<img style='width:200px; height:200px;' src=\"data:image/jpg;base64,"
++ Convert.ToBase64String(Model.user.Avatar) + "\" />")
+
+<h2>@ViewBag.Title</h2>
+
+<table>
+    <tr>
+        @foreach (var item in Model.images)
+        {
+            <td style="padding-right:20px">
+                <a href="@Url.Action(item.Id.ToString(),"Photo")">
+                    @item.Name <br />
+                    @Html.Raw("<img style='width:300px; height:200px;' src=\"data:image/jpg;base64,"
++ Convert.ToBase64String(item.Img) + "\" />") <br />
+                    Рейтинг: @item.Rate <br />
+                    Дата публикации: @item.Date <br /> <hr />
+                </a>
+            </td>
+        }
+    </tr>
+</table>

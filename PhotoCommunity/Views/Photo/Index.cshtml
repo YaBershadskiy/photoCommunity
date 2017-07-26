@@ -1,0 +1,38 @@
+﻿@model IEnumerable<PhotoCommunity.Models.ListPhotoViewModel>
+
+@{
+    ViewBag.Title = "Галерея";
+}
+
+<h2>Галерея</h2>
+
+@foreach (var item in Model)
+{
+    <div>
+        <a href="@Url.Action(item.Id.ToString(),"Photo")">
+            <h4>@Html.DisplayFor(modelItem => item.Name)</h4><br />
+        </a>
+        <a href="@Url.Action(item.Id.ToString(),"Photo")">
+            @Html.Raw("<img style='width:700px; height:400px;' src=\"data:image/jpg;base64,"
++ Convert.ToBase64String(item.Img) + "\" />")
+        </a> <br />
+        <a href="@Url.Action("photos-"+item.Owner.Id,"User")">
+            @Html.DisplayFor(modelItem => item.Owner.Name)
+            @Html.DisplayFor(modelItem => item.Owner.Surname)
+        </a>
+        @Html.DisplayFor(modelItem => item.Date)
+        @if (User.IsInRole("Admin"))
+        {
+            using (Html.BeginForm("DeletePhoto", "Admin"))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-actions no-color">
+                    <input type="hidden" value="@item.Id" name="photoId" />
+                    <input type="submit" value="Delete" class="btn btn-default" />
+                </div>
+            }
+        }<hr />
+    </div>
+
+}

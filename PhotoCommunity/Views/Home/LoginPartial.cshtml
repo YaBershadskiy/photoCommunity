@@ -1,0 +1,49 @@
+﻿@model IEnumerable<PhotoCommunity.Models.ApplicationUser>
+
+@{
+    Layout = null; // что бы не зациклился
+}
+
+@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    <ul class="nav navbar-nav">
+        @if (User.IsInRole("Admin"))
+        {
+            <li>@Html.ActionLink("Админ панель", "Index", "Admin")</li>
+        }
+    </ul>
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()  
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                @foreach (var item in Model)
+                {
+                    if (item.Id == User.Identity.GetUserId())
+                    {
+                        @Html.ActionLink(item.Name, "Index", "Profile", routeValues: null, htmlAttributes: new { title = "Profile" })
+                    }
+                }
+            </li>
+            <li>
+                @foreach (var item in Model)
+                {
+                    if (item.Id == User.Identity.GetUserId())
+                    {
+                        @Html.Raw("<img style='height:60px;' src=\"data:image/jpeg;base64,"
+                                 + Convert.ToBase64String(item.Avatar) + "\" />")
+                    }
+                }
+            </li>
+            <li><a href="javascript:document.getElementById('logoutForm').submit()">Выйти</a></li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Регистрация", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Выполнить вход", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+}

@@ -1,0 +1,91 @@
+﻿@model PhotoCommunity.Models.ListPhotoViewModel
+
+@{
+    ViewBag.Title = "Просмотр фото";
+}
+
+<h4>@Model.Name</h4>
+@Html.Raw("<img style='width:600px; height:500px;' src=\"data:image/jpg;base64,"
++ Convert.ToBase64String(Model.Img) + "\" />")
+@using (Ajax.BeginForm("Like", new AjaxOptions {UpdateTargetId="like-counter" }))
+{
+    <input type="hidden" name="imgId" value="@Model.Id" />
+    <table>
+        <tr>
+            <td>
+                <input type="submit" name="like" value="Мне нравится" />
+            </td>
+            <td>
+                <input type="submit" name="unlike" value="Мне не нравится" />
+            </td>
+        </tr>
+    </table>
+}
+<div id="like-counter">
+    <p>@Model.Rate</p>
+</div>
+
+<div id="results">
+    <table>
+        <tr>
+            <td>
+                Имя
+            </td>
+            <td>
+                Текст
+            </td>
+        </tr>   
+        @foreach (var item in Model.Comments)
+            {
+            <tr>
+                <td>
+                    @item.Username
+                </td>
+                <td>
+                    @item.Text
+                </td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        @using (Ajax.BeginForm("DeleteComment", "Admin", new AjaxOptions { UpdateTargetId = "results" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-actions no-color">
+                                <input type="hidden" value="@item.Id" name="commentId" />
+                                <input type="submit" value="Delete" class="btn btn-default" />
+                            </div>
+                        }
+                    </td>
+                }          
+            </tr>
+        }
+    </table>
+</div>
+
+<script type="text/javascript">
+    function ClearTextBox() {
+        $('[name="comment"]').val("");
+    }
+</script>
+
+@using (Ajax.BeginForm("AddComment", new AjaxOptions { UpdateTargetId = "results",OnSuccess = "ClearTextBox" }))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Comments, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            <input type="text" name="comment" class="form-control" />
+            <input type="hidden" name="imgId" value="@Model.Id" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-10">
+            <input type="submit" id="ajax-sender" class="btn btn-default" value="Добавить комментарий" />
+        </div>
+    </div>
+}
+
+
+@Scripts.Render("~/scripts/jquery-1.10.2.min.js")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")
+

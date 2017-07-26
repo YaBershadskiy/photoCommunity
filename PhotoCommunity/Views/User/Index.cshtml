@@ -1,0 +1,21 @@
+﻿@model IEnumerable<PhotoCommunity.Models.ApplicationUser>
+
+@{
+    ViewBag.Title = "Пользователи";
+}
+<h2>@ViewBag.Title</h2>
+
+<table>
+    <tr>
+        @foreach (var item in Model)
+        {
+            <td style="padding-right:20px">
+                <a href="@Url.Action("photos-"+item.Id)">
+                    @item.Name <br />
+                    @Html.Raw("<img style='width:100px; height:200px;' src=\"data:image/jpg;base64,"
++ Convert.ToBase64String(item.Avatar) + "\" />")
+                </a>
+            </td>
+        }
+    </tr>
+</table>

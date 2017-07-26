@@ -1,0 +1,41 @@
+﻿@model IEnumerable<PhotoCommunity.Models.Comment>
+
+<table>
+        <tr>
+            <td>
+                Имя
+            </td>
+            <td>
+                Текст
+            </td>
+        </tr>
+        @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @item.Username
+                </td>
+                <td>
+                    @item.Text
+                </td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        @using (Ajax.BeginForm("DeleteComment", "Admin", new AjaxOptions { UpdateTargetId = "results" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-actions no-color">
+                                <input type="hidden" value="@item.Id" name="commentId" />
+                                <input type="submit" value="Delete" class="btn btn-default" />
+                            </div>
+                        }
+                    </td>
+                }                
+            </tr>
+        }
+    </table>
+
+@Scripts.Render("~/scripts/jquery-1.10.2.min.js")
+@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")
+

@@ -1,0 +1,31 @@
+﻿@model PhotoCommunity.Models.Image
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this photo?</h3>
+<div>
+    <div>        
+            <h4>@Html.DisplayFor(modelItem => Model.Name)</h4><br />
+        
+            @Html.Raw("<img style='width:700px; height:400px;' src=\"data:image/jpg;base64,"
++ Convert.ToBase64String(Model.Img) + "\" />") <br />        
+            @Html.DisplayFor(modelItem => Model.User.Name)
+            @Html.DisplayFor(modelItem => Model.User.Surname)
+            @Html.DisplayFor(modelItem => Model.Date)
+        <hr />
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>
