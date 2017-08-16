@@ -1,91 +1,118 @@
 ﻿@model PhotoCommunity.Models.ListPhotoViewModel
 
 @{
-    ViewBag.Title = "Просмотр фото";
+    ViewBag.Title = Resources.Resource.TitleShow;
 }
-
-<h4>@Model.Name</h4>
-@Html.Raw("<img style='width:600px; height:500px;' src=\"data:image/jpg;base64,"
-+ Convert.ToBase64String(Model.Img) + "\" />")
-@using (Ajax.BeginForm("Like", new AjaxOptions {UpdateTargetId="like-counter" }))
-{
-    <input type="hidden" name="imgId" value="@Model.Id" />
-    <table>
-        <tr>
-            <td>
-                <input type="submit" name="like" value="Мне нравится" />
-            </td>
-            <td>
-                <input type="submit" name="unlike" value="Мне не нравится" />
-            </td>
-        </tr>
-    </table>
-}
-<div id="like-counter">
-    <p>@Model.Rate</p>
-</div>
-
-<div id="results">
-    <table>
-        <tr>
-            <td>
-                Имя
-            </td>
-            <td>
-                Текст
-            </td>
-        </tr>   
-        @foreach (var item in Model.Comments)
+<br />
+<div id="photo-show-block">
+    <div id="err-block">
+        <h3></h3>
+    </div>
+    <h3>@Model.Name (@Html.ActionLink(@Model.Owner.Name + " " + @Model.Owner.Surname, "user-" + Model.Owner.Id, "User"))</h3>
+    <div class="center-container">
+        @Html.Raw("<img src=\"data:image/jpg;base64," + Convert.ToBase64String(Model.Img) + "\" />")
+        <div id="like-procedure">
+            @using (Ajax.BeginForm("Like", new AjaxOptions {OnSuccess = "OnSuccess(data,'like-counter');" }))
             {
-            <tr>
-                <td>
-                    @item.Username
-                </td>
-                <td>
-                    @item.Text
-                </td>
-                @if (User.IsInRole("Admin"))
-                {
-                    <td>
-                        @using (Ajax.BeginForm("DeleteComment", "Admin", new AjaxOptions { UpdateTargetId = "results" }))
-                        {
-                            @Html.AntiForgeryToken()
+                <input type="hidden" name="imgId" value="@Model.Id" />
+                <a class="rating" onclick="$('#like').click();">
+                    <i id="toLike" class="material-icons">thumb_up</i>
+                </a>
+                <input type="submit" id="like" name="like" value="@Resources.Resource.Like" hidden="hidden" />
 
-                            <div class="form-actions no-color">
-                                <input type="hidden" value="@item.Id" name="commentId" />
-                                <input type="submit" value="Delete" class="btn btn-default" />
-                            </div>
-                        }
+                <a class="rating" onclick="$('#unlike').click();">
+                    <i id="toUnlike" class="material-icons">thumb_down</i>
+                </a>
+                <input type="submit" id="unlike" name="unlike" value="@Resources.Resource.Unlike" hidden="hidden" />
+            }
+            <div id="like-counter">
+                <span>Rating: </span>
+                <span>@Model.Rate</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="description">
+        <label>@Resources.Resource.Description</label><br />
+        <p>@Model.Description</p>
+    </div>
+    <hr />
+
+    <div id="results">
+        <h4>@Model.Comments.Count comments</h4>
+        <ul>
+            @foreach (var item in Model.Comments)
+            {
+                <li>
+                    <table width="100%">
+                        <colgroup>
+                            <col width="90">
+                            <col width="*">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <img width="75" height="75" src="data:image/jpg;base64,@Convert.ToBase64String(item.User.Avatar)" />
+                                </td>
+                                <td style="vertical-align:top;">
+                                    <div class="comment-title">
+                                        <a href="@Url.Action("user-"+item.User.Id,"User")">@item.User.Name @item.User.Surname</a>
+                                        <span class="date">@item.Date</span>
+                                    </div>
+                                    <div class="comment-content">
+                                        <span>
+                                            @item.Text
+                                        </span>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            using (Ajax.BeginForm("DeleteComment", "Admin", new AjaxOptions { OnSuccess = "OnSuccess(data,'results');" }))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                <a class="material-icons" id="delete-link" onclick="document.getElementById('delete-button_@item.Id').click();">delete_forever</a>
+                                                <div class="form-actions no-color">
+                                                    <input type="hidden" value="@item.Id" name="commentId" />
+                                                    <input type="submit" value="@Resources.Resource.DeleteSubmitButton" class="btn btn-default delete-button" id="delete-button_@item.Id" />
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </li>
+            }
+        </ul>
+    </div>
+
+    @using (Ajax.BeginForm("AddComment", null, new AjaxOptions { OnSuccess = "OnSuccess(data,'results');" }, new { @id = "add-comment" }))
+    {
+        @Html.AntiForgeryToken()
+        <table width="100%">
+            <colgroup>
+                <col width="90" />
+                <col width="*" />
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>
+                        <textarea name="comment"></textarea>
+                        <input type="hidden" name="imgId" value="@Model.Id" />
                     </td>
-                }          
-            </tr>
-        }
-    </table>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="submit" id="ajax-sender" class="btn btn-default" value="@Resources.Resource.AddComment" />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    }
 </div>
 
-<script type="text/javascript">
-    function ClearTextBox() {
-        $('[name="comment"]').val("");
-    }
-</script>
-
-@using (Ajax.BeginForm("AddComment", new AjaxOptions { UpdateTargetId = "results",OnSuccess = "ClearTextBox" }))
-{
-    <div class="form-group">
-        @Html.LabelFor(m => m.Comments, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            <input type="text" name="comment" class="form-control" />
-            <input type="hidden" name="imgId" value="@Model.Id" />
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-10">
-            <input type="submit" id="ajax-sender" class="btn btn-default" value="Добавить комментарий" />
-        </div>
-    </div>
-}
-
-
+@Scripts.Render("~/Scripts/UI/ui.js")
 @Scripts.Render("~/scripts/jquery-1.10.2.min.js")
 @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")
 

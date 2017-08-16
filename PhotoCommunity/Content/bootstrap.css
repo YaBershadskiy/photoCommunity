@@ -458,7 +458,7 @@ cite {
     color: #b94a48;
 }
 
-.text-success {
+.text-success {    
     color: #468847;
 }
 
@@ -7102,4 +7102,12 @@ td.visible-print {
 #admin-users td{
     max-width:200px;
     overflow:hidden;
+}
+
+#delete-icon{
+    font-size: 25pt;
+}
+
+.edit-icon{
+    background: url("../Images/edit_black.png")
 }

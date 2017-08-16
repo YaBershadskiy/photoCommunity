@@ -5,69 +5,34 @@ using Microsoft.Owin.Security;
 
 namespace PhotoCommunity.Models
 {
-    public class IndexViewModel
-    {
-        public bool HasPassword { get; set; }
-        public IList<UserLoginInfo> Logins { get; set; }
-        public string PhoneNumber { get; set; }
-        public bool TwoFactor { get; set; }
-        public bool BrowserRemembered { get; set; }
-    }
-
-    public class ManageLoginsViewModel
-    {
-        public IList<UserLoginInfo> CurrentLogins { get; set; }
-        public IList<AuthenticationDescription> OtherLogins { get; set; }
-    }
-
-    public class FactorViewModel
-    {
-        public string Purpose { get; set; }
-    }
-
-    public class SetPasswordViewModel
-    {
-        [Required]
-        [StringLength(100, ErrorMessage = "Значение {0} должно содержать символов не менее: {2}.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Новый пароль")]
-        public string NewPassword { get; set; }
-
-        [DataType(DataType.Password)]
-        [Display(Name = "Подтверждение нового пароля")]
-        [Compare("NewPassword", ErrorMessage = "Новый пароль и его подтверждение не совпадают.")]
-        public string ConfirmPassword { get; set; }
-    }
-
     public class EditProfileViewModel
     {
         [Required]
         [DataType(DataType.Text)]
-        [Display(Name = "Имя")]
+        [Display(Name = "Name", ResourceType = typeof(Resources.Resource))]
         public string Name { get; set; }
 
         [Required]
         [DataType(DataType.Text)]
-        [Display(Name = "Фамилия")]
+        [Display(Name = "Surname", ResourceType = typeof(Resources.Resource))]
         public string Surname { get; set; }
 
-        [Required]
-        [Display(Name = "Ваш аватар")]
+        [Display(Name = "Avatar", ResourceType = typeof(Resources.Resource))]
         public byte[] Avatar { get; set; }
 
         [Required]
         [Phone]
-        [Display(Name = "Телефон")]
+        [Display(Name = "Tel", ResourceType = typeof(Resources.Resource))]
         public string Tel { get; set; }
 
         [Required]
         [EmailAddress]
-        [Display(Name = "Адрес электронной почты")]
+        [Display(Name = "Email", ResourceType = typeof(Resources.Resource))]
         public string Email { get; set; }
 
         [Required]
         [DataType(DataType.MultilineText)]
-        [Display(Name = "О себе")]
+        [Display(Name = "About", ResourceType = typeof(Resources.Resource))]
         public string About { get; set; }
     }
 
@@ -75,44 +40,18 @@ namespace PhotoCommunity.Models
     {
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Текущий пароль")]
+        [Display(Name = "CurrentPassword", ResourceType = typeof(Resources.Resource))]
         public string OldPassword { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Значение {0} должно содержать символов не менее: {2}.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessageResourceType = typeof(Resources.Resource), ErrorMessageResourceName = "PasswordSequrity", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Новый пароль")]
+        [Display(Name = "NewPassword", ResourceType = typeof(Resources.Resource))]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Подтверждение нового пароля")]
-        [Compare("NewPassword", ErrorMessage = "Новый пароль и его подтверждение не совпадают.")]
+        [Display(Name = "NewPasswordConfrim", ResourceType = typeof(Resources.Resource))]
+        [Compare("NewPassword", ErrorMessageResourceType = typeof(Resources.Resource), ErrorMessageResourceName = "PasswordsNotEqual")]
         public string ConfirmPassword { get; set; }
-    }
-
-    public class AddPhoneNumberViewModel
-    {
-        [Required]
-        [Phone]
-        [Display(Name = "Номер телефона")]
-        public string Number { get; set; }
-    }
-
-    public class VerifyPhoneNumberViewModel
-    {
-        [Required]
-        [Display(Name = "Код")]
-        public string Code { get; set; }
-
-        [Required]
-        [Phone]
-        [Display(Name = "Номер телефона")]
-        public string PhoneNumber { get; set; }
-    }
-
-    public class ConfigureTwoFactorViewModel
-    {
-        public string SelectedProvider { get; set; }
-        public ICollection<System.Web.Mvc.SelectListItem> Providers { get; set; }
     }
 }

@@ -10,14 +10,14 @@ namespace PhotoCommunity.Models
     {
         [Required]
         [DataType(DataType.Text)]
-        [Display(Name = "Название фото")]
+        [Display(Name = "PhotoName", ResourceType = typeof(Resources.Resource))]
         public string Name { get; set; }
 
         [Required]
-        [Display(Name = "Выбирите фото")]
+        [Display(Name = "ChosePhoto", ResourceType = typeof(Resources.Resource))]
         public HttpPostedFileBase Img { get; set; }
 
-        [Display(Name = "Описание фото")]
+        [Display(Name = "Description", ResourceType = typeof(Resources.Resource))]
         public string Description { get; set; }
     }
 
@@ -25,6 +25,7 @@ namespace PhotoCommunity.Models
     {
         public int Id { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:dd MMM, hh:mm}")]
         public DateTime Date { get; set; }
 
         public string Name { get; set; }
@@ -35,17 +36,13 @@ namespace PhotoCommunity.Models
 
         public int Rate { get; set; }
 
-        [Display(Name = "Добавить комментарий")]
+        [Display(Name = "AddComment",ResourceType = typeof(Resources.Resource))]
         public List<Comment> Comments { get; set; }
+
+        public string Description { get; set; }
     }
 
-    public class CommentsViewModel
-    {
-        [Display(Name = "Комментарии")]
-        public ICollection<Comment> Comments { get; set; }
-    }
-
-    public class UserPhotosViewModel
+   public class UserPhotosViewModel
     {
         public IEnumerable<Image> images { get; set; }
         public ApplicationUser user { get; set; }

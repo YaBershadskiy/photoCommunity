@@ -1,84 +1,98 @@
 ﻿@model IEnumerable<PhotoCommunity.Models.AdminUsersListViewModel>
 
 @{
-    ViewBag.Title = "Редактор пользователей";
+    ViewBag.Title = Resources.Resource.MenuAdmin;
 }
 
-<h2 style="display:inline-block">@ViewBag.Title</h2>
-@using (Ajax.BeginForm("Search", null, new AjaxOptions { UpdateTargetId = "ajax-sort-users" }, new { htmlAttributes = new {@id = "search-user"} }))
-{
-    <input type="search" name="searchText" />
-    <input type="submit" value="Найти" />
-}
+<div id="admin-block">
+    <h2>@ViewBag.Title</h2>
+    @using (Ajax.BeginForm("Search", null, new AjaxOptions { UpdateTargetId = "ajax-sort-users" }, new { @id = "search-user" }))
+    {
+        <input type="search" class="form-control" name="searchText" />
+        <input type="submit" class="btn btn-default" value="@Resources.Resource.Search" />
+    }
 
-<table class="table" id="admin-users">
-    <tr>
-        <th>
-            Name
-            @Ajax.ActionLink("↑", "Sort", new { sort = "name", dir = "asc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
-            @Ajax.ActionLink("↓", "Sort", new { sort = "name", dir = "desc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
-        </th>
-        <th>
-            Surname
-            @Ajax.ActionLink("↑", "Sort", new { sort = "surname", dir = "asc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
-            @Ajax.ActionLink("↓", "Sort", new { sort = "surname", dir = "desc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
-        </th>
-        <th>
-            E-mail
-            @Ajax.ActionLink("↑", "Sort", new { sort = "email", dir = "asc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
-            @Ajax.ActionLink("↓", "Sort", new { sort = "email", dir = "desc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
-        </th>
-        <th>
-            EmailConfrimed
-            @Ajax.ActionLink("↑", "Sort", new { sort = "emailconfrimed", dir = "asc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
-            @Ajax.ActionLink("↓", "Sort", new { sort = "emailconfrimed", dir = "desc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
-        <th>
-            PhoneNumber
-            @Ajax.ActionLink("↑", "Sort", new { sort = "phonenumber", dir = "asc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
-            @Ajax.ActionLink("↓", "Sort", new { sort = "phonenumber", dir = "desc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
-        </th>
-        <th>
-            About
-        </th>
-        <th>
-            PasswordHash
-        </th>
-        <th></th>
-    </tr>
-    <tbody id="ajax-sort-users">
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Surname)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EmailConfirmed)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.About)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PasswordHash)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "DeleteUser", new { id = item.Id })
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    <table class="table" id="admin-users">
+        <colgroup>
+            <col width="10%" />
+            <col width="15%" />
+            <col width="20%" />
+            <col width="10%" />
+            <col width="20%" />
+            <col width="10%" />
+            <col width="20%" />
+        </colgroup>
+        <tr>
+            <th>
+                @Resources.Resource.Name
+                <div class="inline-block">
+                    @Ajax.ActionLink("↑", "Sort", new { sort = "name", dir = "asc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
+                    @Ajax.ActionLink("↓", "Sort", new { sort = "name", dir = "desc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
+                </div>
+            </th>
+            <th>
+                @Resources.Resource.Surname
+                <div class="inline-block">
+                    @Ajax.ActionLink("↑", "Sort", new { sort = "surname", dir = "asc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
+                    @Ajax.ActionLink("↓", "Sort", new { sort = "surname", dir = "desc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
+                </div>
+            </th>
+            <th>
+                @Resources.Resource.Email
+                <div class="inline-block">
+                    @Ajax.ActionLink("↑", "Sort", new { sort = "email", dir = "asc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
+                    @Ajax.ActionLink("↓", "Sort", new { sort = "email", dir = "desc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
+                </div>
+            </th>
+            <th>
+                @Resources.Resource.Tel
+                <div class="inline-block">
+                    @Ajax.ActionLink("↑", "Sort", new { sort = "phonenumber", dir = "asc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
+                    @Ajax.ActionLink("↓", "Sort", new { sort = "phonenumber", dir = "desc" }, new AjaxOptions { UpdateTargetId = "ajax-sort-users" })
+                </div>
+            </th>
+            <th>
+                @Resources.Resource.About
+            </th>
+            <th>
+                @Resources.Resource.Password-Hash
+            </th>
+            <th></th>
+        </tr>
+        <tbody id="ajax-sort-users">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Surname)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.About)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PasswordHash)
+                    </td>
+                    <td>
+                        <div class="action-links">
+                            @Html.ActionLink(Resources.Resource.TitleEdit, "Edit", new { id = item.Id }) <br />
+                            @Html.ActionLink(Resources.Resource.TitleDetails, "Details", new { id = item.Id }) <br />
+                            @Html.ActionLink(Resources.Resource.DeleteSubmitButton, "DeleteUser", new { id = item.Id })
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
 @Scripts.Render("~/scripts/jquery-1.10.2.min.js")
 @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")

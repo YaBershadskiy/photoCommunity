@@ -1,31 +1,35 @@
 ﻿@model PhotoCommunity.Models.Image
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = Resources.Resource.TitleDeletePhoto;
 }
 
-<h2>Delete</h2>
+<h2>@ViewBag.Title</h2>
 
-<h3>Are you sure you want to delete this photo?</h3>
-<div>
-    <div>        
-            <h4>@Html.DisplayFor(modelItem => Model.Name)</h4><br />
-        
-            @Html.Raw("<img style='width:700px; height:400px;' src=\"data:image/jpg;base64,"
-+ Convert.ToBase64String(Model.Img) + "\" />") <br />        
-            @Html.DisplayFor(modelItem => Model.User.Name)
-            @Html.DisplayFor(modelItem => Model.User.Surname)
-            @Html.DisplayFor(modelItem => Model.Date)
-        <hr />
+<h3>@Resources.Resource.DeletePhotoMessage</h3>
+<div id="delete-photo-block">
+    <div>
+        <br />
+        <div>
+            <div id="name-div">
+                <h4>@Model.Name (@Html.ActionLink(@Model.User.Name + " " + @Model.User.Surname, "user-" + Model.User.Id, "User"))</h4>
+            </div>
+            <div id="date-div">
+                <span>@Model.Date</span>
+            </div>
+        </div>
+        <div class="center-container">
+            @Html.Raw("<img src=\"data:image/jpg;base64," + Convert.ToBase64String(Model.Img) + "\" />")
+        </div>
     </div>
 
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
-        </div>
-    }
+    <div id="actions">
+        <button class="btn btn-default" onclick="document.getElementById('hidden-link').click();" >@Resources.Resource.BackLink</button>
+        <a id="hidden-link" href="@Url.Action("Index","Photo")" hidden="hidden"></a>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <input type="submit" value="@Resources.Resource.DeleteSubmitButton" class="btn btn-default"/>
+        }
+    </div>
 </div>

@@ -25,7 +25,11 @@ namespace PhotoCommunity
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
-                      "~/Content/site.css"));
+                      "~/Content/site.css",
+                      "~/Content/UI.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/ui").Include(
+                      "~/Scripts/UI/ui.js"));
         }
     }
 }

@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 namespace PhotoCommunity.Controllers
 {
     [Authorize(Roles = "Admin")]
+    [Culture]
     public class AdminController : Controller
     {
         private AllUsers db = new AllUsers();
@@ -35,10 +36,10 @@ namespace PhotoCommunity.Controllers
         public async Task<ActionResult> Index()
         {
             List<AdminUsersListViewModel> users = new List<AdminUsersListViewModel>();
-                       
+
             foreach (AspNetUsers item in db.AspNetUsers)
             {
-                if ( await UserManager.IsInRoleAsync(item.Id,"User"))
+                if (await UserManager.IsInRoleAsync(item.Id, "User"))
                 {
                     users.Add(DbTable2Model(item));
                 }
@@ -51,7 +52,7 @@ namespace PhotoCommunity.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View("~/Views/Error/NotFound.cshtml");
             }
             AspNetUsers aspNetUsers = db.AspNetUsers.Find(id);
             if (aspNetUsers == null)
@@ -61,35 +62,12 @@ namespace PhotoCommunity.Controllers
             return View(DbTable2Model(aspNetUsers));
         }
 
-        // GET: AspNetUsers/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: AspNetUsers/Create
-        // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
-        // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Surname,Avatar,About,Email,EmailConfirmed,PasswordHash,SecurityStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEndDateUtc,LockoutEnabled,AccessFailedCount,UserName")] AspNetUsers aspNetUsers)
-        {
-            if (ModelState.IsValid)
-            {
-                db.AspNetUsers.Add(aspNetUsers);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(DbTable2Model(aspNetUsers));
-        }
-
         // GET: AspNetUsers/Edit/5
         public ActionResult Edit(string id)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View("~/Views/Error/NotFound.cshtml");
             }
             AspNetUsers aspNetUsers = db.AspNetUsers.Find(id);
             if (aspNetUsers == null)
@@ -120,7 +98,7 @@ namespace PhotoCommunity.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View("~/Views/Error/NotFound.cshtml");
             }
             AspNetUsers aspNetUsers = db.AspNetUsers.Find(id);
             if (aspNetUsers == null)
@@ -136,18 +114,31 @@ namespace PhotoCommunity.Controllers
         public ActionResult DeleteUserConfirmed(string id)
         {
             AspNetUsers aspNetUsers = db.AspNetUsers.Find(id);
+            foreach (var img in allDb.Images.Where(img => img.User.Id == aspNetUsers.Id).ToList())
+            {
+                foreach (var comment in img.Comments.ToList())
+                {
+                    allDb.Comments.Remove(comment);
+                }
+                foreach (var like in allDb.Likes.Where(like => like.Image.Id == img.Id).ToList())
+                {
+                    allDb.Likes.Remove(like);
+                }
+                allDb.Images.Remove(img);
+            }
+            allDb.SaveChanges();
             db.AspNetUsers.Remove(aspNetUsers);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        public ActionResult DeletePhoto(int id)
+        public ActionResult DeletePhoto(int? photoId)
         {
-            if (id == 0)
+            if (photoId == 0)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Image photo = db.Image.Find(id);
+            Image photo = allDb.Images.Find(photoId);
             if (photo == null)
             {
                 return HttpNotFound();
@@ -160,28 +151,36 @@ namespace PhotoCommunity.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeletePhotoConfirmed(int photoId)
         {
-            Image photo = db.Image.Find(photoId);
-            foreach (var comment in photo.Comments)
+            Image photo = allDb.Images.Find(photoId);
+            List<Like> likes = allDb.Likes.Where(like => like.Image.Id == photo.Id).ToList();
+            foreach (var comment in photo.Comments.ToList())
             {
-                db.Comment.Remove(comment);
+                allDb.Comments.Remove(comment);
             }
-            db.Image.Remove(photo);
-            db.SaveChanges();
-            return RedirectToAction("Index","Photo");
+            foreach (var like in likes)
+            {
+                allDb.Likes.Remove(like);
+            }
+            allDb.Images.Remove(photo);
+            allDb.SaveChanges();
+            return RedirectToAction("Index", "Photo");
         }
 
-         // POST: AspNetUsers/Delete/5
+        // POST: AspNetUsers/Delete/5
         [HttpPost, ActionName("DeleteComment")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteCommentConfirmed(int commentId)
         {
             Comment comment = allDb.Comments.Find(commentId);
+            Image img = comment.Image;
             allDb.Comments.Remove(comment);
             allDb.SaveChanges();
-            return PartialView("~/Views/Photo/AddComment.cshtml",allDb.Comments);
+
+            IEnumerable<Comment> comments = allDb.Images.Where(image => image.Id == img.Id).FirstOrDefault().Comments.OrderBy(item => item.Date);
+            return PartialView("~/Views/Photo/AddComment.cshtml", comments);
         }
 
-        public async Task<ActionResult> Sort(string sort,string dir)
+        public async Task<ActionResult> Sort(string sort, string dir)
         {
             List<AdminUsersListViewModel> users = new List<AdminUsersListViewModel>();
 
@@ -192,7 +191,7 @@ namespace PhotoCommunity.Controllers
                     users.Add(DbTable2Model(item));
                 }
             }
-            if (dir=="asc")
+            if (dir == "asc")
             {
                 switch (sort)
                 {
@@ -250,7 +249,7 @@ namespace PhotoCommunity.Controllers
                         break;
                 }
             }
-            
+
             return PartialView(users);
         }
 
@@ -271,7 +270,7 @@ namespace PhotoCommunity.Controllers
                 }
             }
 
-            return PartialView("Sort",users);
+            return PartialView("Sort", users);
         }
 
         protected override void Dispose(bool disposing)
@@ -297,7 +296,5 @@ namespace PhotoCommunity.Controllers
             user.About = aspNetUsers.About;
             return user;
         }
-
-
     }
 }

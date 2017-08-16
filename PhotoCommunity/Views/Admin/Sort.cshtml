@@ -13,9 +13,6 @@
             @Html.DisplayFor(modelItem => item.Email)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.EmailConfirmed)
-        </td>
-        <td>
             @Html.DisplayFor(modelItem => item.PhoneNumber)
         </td>
         <td>
@@ -25,9 +22,11 @@
             @Html.DisplayFor(modelItem => item.PasswordHash)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            <div class="action-links">
+                @Html.ActionLink(Resources.Resource.TitleEdit, "Edit", new { id = item.Id }) <br />
+                @Html.ActionLink(Resources.Resource.TitleDetails, "Details", new { id = item.Id }) <br />
+                @Html.ActionLink(Resources.Resource.DeleteSubmitButton, "DeleteUser", new { id = item.Id })
+            </div>
         </td>
     </tr>
 }

@@ -1,41 +1,47 @@
 ﻿@model IEnumerable<PhotoCommunity.Models.Comment>
 
-<table>
-        <tr>
-            <td>
-                Имя
-            </td>
-            <td>
-                Текст
-            </td>
-        </tr>
-        @foreach (var item in Model)
+<h4>@Model.Count() @Resources.Resource.CommentCount</h4>
+<ul>
+    @foreach (var item in Model)
             {
-            <tr>
-                <td>
-                    @item.Username
-                </td>
-                <td>
-                    @item.Text
-                </td>
-                @if (User.IsInRole("Admin"))
-                {
-                    <td>
-                        @using (Ajax.BeginForm("DeleteComment", "Admin", new AjaxOptions { UpdateTargetId = "results" }))
-                        {
-                            @Html.AntiForgeryToken()
-
-                            <div class="form-actions no-color">
-                                <input type="hidden" value="@item.Id" name="commentId" />
-                                <input type="submit" value="Delete" class="btn btn-default" />
+        <li>
+            <table width="100%">
+                <colgroup>
+                    <col width="90">
+                    <col width="*">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <td>
+                            <img width="75" height="75" src="data:image/jpg;base64,@Convert.ToBase64String(item.User.Avatar)" />
+                        </td>
+                        <td style="vertical-align:top;">
+                            <div class="comment-title">
+                                <a href="@Url.Action("user-"+item.User.Id,"User")">@item.User.Name @item.User.Surname</a>
+                                <span class="date">@item.Date</span>
                             </div>
-                        }
-                    </td>
-                }                
-            </tr>
-        }
-    </table>
-
-@Scripts.Render("~/scripts/jquery-1.10.2.min.js")
-@Scripts.Render("~/scripts/jquery.unobtrusive-ajax.min.js")
+                            <div class="comment-content">
+                                <span>
+                                    @item.Text
+                                </span>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    using (Ajax.BeginForm("DeleteComment", "Admin", new AjaxOptions { UpdateTargetId = "results" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <a class="material-icons" id="delete-link" onclick="document.getElementById('delete-button_@item.Id').click();">delete_forever</a>
+                                                <div class="form-actions no-color">
+                                                    <input type="hidden" value="@item.Id" name="commentId" />
+                                                    <input type="submit" value="@Resources.Resource.DeleteSubmitButton" class="btn btn-default delete-button" id="delete-button_@item.Id" />
+                                                </div>
+                                    }
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </li>
+    }
+</ul>
 

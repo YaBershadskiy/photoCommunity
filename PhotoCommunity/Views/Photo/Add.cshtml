@@ -1,18 +1,19 @@
 ﻿@model PhotoCommunity.Models.AddPhotoViewModel
 
 @{
-    ViewBag.Title = "Добавить фото";
+    ViewBag.Title = Resources.Resource.TitleAddPhoto;
 }
+<h2>@ViewBag.Title</h2>
+<hr />
 
 @using (Html.BeginForm("Add", "Photo", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
 {
-    <h2>Добавление фото</h2>
-    <hr />
-    <div class="form-group">
+    <div class="form-group" id="upload-photo">
         @Html.LabelFor(m => m.Img, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            <input type="button" class="form-control" id="loadFileXml" value="Загрузить..." onclick="document.getElementById('file-button').click();" />
-            @Html.TextBoxFor(m => m.Img, new { @id = "file-button", type = "file" })
+            <input id="uploadFile" class="form-control" placeholder="@Resources.Resource.ChosePhoto "disabled="disabled" />
+            <input type="button" class="form-control" style="margin-top:10px" value="@Resources.Resource.LoadLink..." onclick="document.getElementById('file-button').click();" />
+            @Html.TextBoxFor(m => m.Img, new { @id = "file-button", type = "file", accept = "image/*" })
         </div>
     </div>
     <div class="form-group">
@@ -29,9 +30,13 @@
     </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Добавить фото" />
+            <input type="submit" class="btn btn-default" value="@Resources.Resource.SaveLink" />
         </div>
     </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/ui")
 }
 
 

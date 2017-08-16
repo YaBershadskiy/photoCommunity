@@ -72,13 +72,13 @@ namespace PhotoCommunity
             // Настройка логики проверки паролей
             manager.PasswordValidator = new PasswordValidator
             {
+                
                 RequiredLength = 6,
-                RequireNonLetterOrDigit = true,
+                RequireNonLetterOrDigit = false,
                 RequireDigit = true,
                 RequireLowercase = true,
                 RequireUppercase = true,
             };
-
             // Настройка параметров блокировки по умолчанию
             manager.UserLockoutEnabledByDefault = true;
             manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5);

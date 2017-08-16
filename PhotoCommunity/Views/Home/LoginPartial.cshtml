@@ -1,7 +1,7 @@
-﻿@model IEnumerable<PhotoCommunity.Models.ApplicationUser>
+﻿@model PhotoCommunity.Models.ApplicationUser
 
 @{
-    Layout = null; // что бы не зациклился
+    Layout = null;
 }
 
 @using Microsoft.AspNet.Identity
@@ -10,40 +10,53 @@
     <ul class="nav navbar-nav">
         @if (User.IsInRole("Admin"))
         {
-            <li>@Html.ActionLink("Админ панель", "Index", "Admin")</li>
+            <li>@Html.ActionLink(Resources.Resource.MenuAdmin, "Index", "Admin")</li>
         }
     </ul>
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
-        @Html.AntiForgeryToken()  
+        @Html.AntiForgeryToken()
         <ul class="nav navbar-nav navbar-right">
-            <li>
-                @foreach (var item in Model)
-                {
-                    if (item.Id == User.Identity.GetUserId())
-                    {
-                        @Html.ActionLink(item.Name, "Index", "Profile", routeValues: null, htmlAttributes: new { title = "Profile" })
-                    }
-                }
-            </li>
-            <li>
-                @foreach (var item in Model)
-                {
-                    if (item.Id == User.Identity.GetUserId())
-                    {
-                        @Html.Raw("<img style='height:60px;' src=\"data:image/jpeg;base64,"
-                                 + Convert.ToBase64String(item.Avatar) + "\" />")
-                    }
-                }
-            </li>
-            <li><a href="javascript:document.getElementById('logoutForm').submit()">Выйти</a></li>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <li id="drop-down" class="dropdown">
+                    <a href="@Url.Action("user-" + User.Identity.GetUserId(),"User")" onmouseover="" class="dropdown-toggle" data-toggle="dropdown"
+                       data-hover="dropdown" data-close-others="true">
+                        @Model.Name
+                        @Html.Raw("<img style='height:35px;width:35px;' src=\"data:image/jpeg;base64,"
+                                 + Convert.ToBase64String(Model.Avatar) + "\" />")
+                    </a>
+
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            @Html.ActionLink(Resources.Resource.MyProfile, "user-" + User.Identity.GetUserId(), "User")
+                        </li>
+                        <li>
+                            @Html.ActionLink(Resources.Resource.EditProfile, "Edit", "User")
+                        </li>
+                        @if (User.IsInRole("User"))
+                        {
+                            <li>
+                                @Html.ActionLink(Resources.Resource.AddPhoto, "Add", "Photo")
+                            </li>
+                        }
+
+                        <li>
+                            @Html.ActionLink(Resources.Resource.ChangePass, "ChangePassword", "User")
+                        </li>
+                        <li>
+                            <a href="javascript:document.getElementById('logoutForm').submit()">@Resources.Resource.MenuLogout</a>
+                        </li>
+                    </ul>
+                </li>
+            }
         </ul>
     }
 }
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Регистрация", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("Выполнить вход", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        <li>@Html.ActionLink(Resources.Resource.MenuRegister, "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink(Resources.Resource.MenuLogin, "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
     </ul>
 }

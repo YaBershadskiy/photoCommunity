@@ -1,38 +1,47 @@
-﻿@model IEnumerable<PhotoCommunity.Models.ListPhotoViewModel>
+﻿@model PagedList.IPagedList<PhotoCommunity.Models.ListPhotoViewModel>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@Styles.Render("~/Content/css")
 
 @{
-    ViewBag.Title = "Галерея";
+    ViewBag.Title = @Resources.Resource.GalleryTitle;
 }
 
-<h2>Галерея</h2>
+<h2>@ViewBag.Title</h2>
 
-@foreach (var item in Model)
-{
-    <div>
-        <a href="@Url.Action(item.Id.ToString(),"Photo")">
-            <h4>@Html.DisplayFor(modelItem => item.Name)</h4><br />
-        </a>
-        <a href="@Url.Action(item.Id.ToString(),"Photo")">
-            @Html.Raw("<img style='width:700px; height:400px;' src=\"data:image/jpg;base64,"
-+ Convert.ToBase64String(item.Img) + "\" />")
-        </a> <br />
-        <a href="@Url.Action("photos-"+item.Owner.Id,"User")">
-            @Html.DisplayFor(modelItem => item.Owner.Name)
-            @Html.DisplayFor(modelItem => item.Owner.Surname)
-        </a>
-        @Html.DisplayFor(modelItem => item.Date)
-        @if (User.IsInRole("Admin"))
-        {
-            using (Html.BeginForm("DeletePhoto", "Admin"))
-            {
-                @Html.AntiForgeryToken()
-
-                <div class="form-actions no-color">
-                    <input type="hidden" value="@item.Id" name="photoId" />
-                    <input type="submit" value="Delete" class="btn btn-default" />
+<div class="gallery-block">
+    @foreach (var item in Model)
+    {
+        <div class="wall-photo">
+            <div class="photo-body">
+                <a href="@Url.Action(item.Id.ToString(),"Photo")">
+                    <div class="center-image" style="background-image:url('data:image/jpg;base64,@Convert.ToBase64String(item.Img)');">
+                    </div>
+                </a>
+            </div>
+            <div class="photo-info">
+                <div class="stat">
+                    <span> @Html.DisplayFor(modelItem => item.Date)</span>
+                    <span id="rate">Rate: @Html.DisplayFor(modelItem => item.Rate)</span>
                 </div>
-            }
-        }<hr />
-    </div>
+                <div class="name">
+                    @Html.ActionLink(@Html.DisplayFor(modelItem => item.Name).ToString(), item.Id.ToString(), "Photo",null, htmlAttributes: new { @class = "post-header-link" })
+                    @if (User.IsInRole("Admin"))
+                    {
+                        @Html.ActionLink("delete_forever", "DeletePhoto", "Admin", new { photoId = item.Id }, new { @class = "material-icons", @id = "delete-icon" });
+                    }
+                </div>
+                <div class="author">
+                    <a href="@Url.Action("user-"+item.Owner.Id,"User")">
+                        @Html.DisplayFor(modelItem => item.Owner.Name)
+                        @Html.DisplayFor(modelItem => item.Owner.Surname)
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@Resources.Resource.Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) @Resources.Resource.Of @Model.PageCount
 
-}
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+

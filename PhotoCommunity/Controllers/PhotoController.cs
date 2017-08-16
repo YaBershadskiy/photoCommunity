@@ -1,22 +1,26 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using PagedList;
 using PhotoCommunity.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using static PhotoCommunity.Controllers.UserController;
 
 namespace PhotoCommunity.Controllers
 {
+    [Culture]
     public class PhotoController : Controller
     {
         ApplicationDbContext AppCtx = new ApplicationDbContext();
 
         // GET: Photo
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
             List<ListPhotoViewModel> photoInfo = new List<ListPhotoViewModel>();
             List<Image> images = AppCtx.Images.OrderByDescending(item => item.Date).ToList<Image>();
@@ -31,10 +35,12 @@ namespace PhotoCommunity.Controllers
                 photoModel.Owner = item.User;
                 photoInfo.Add(photoModel);
             }
-            return View(photoInfo);
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
+            return View(photoInfo.ToPagedList(pageNumber,pageSize));
         }
 
-        [Authorize]
+        [Authorize(Roles = "User")]
         public ActionResult Add()
         {
             return View();
@@ -46,7 +52,6 @@ namespace PhotoCommunity.Controllers
         {
             ///TODO!!!После закгрузки картинки выводить сообщение и очищать поля ввода
             byte[] imageData = null;
-            // считываем переданный файл в массив байтов
             using (var binaryReader = new BinaryReader(model.Img.InputStream))
             {
                 imageData = binaryReader.ReadBytes(model.Img.ContentLength);
@@ -56,17 +61,16 @@ namespace PhotoCommunity.Controllers
             var photo = new Image { Name = model.Name, Date = DateTime.Now, User = user, Img = imageData, Description = model.Description };
             AppCtx.Images.Add(photo);
             await AppCtx.SaveChangesAsync();
-            return View(model);
+            return RedirectToAction("user-"+User.Identity.GetUserId(), "User", new { Message = ManageMessageId.AddPhotoSuccess });
         }
 
         [Route("Photo/{id:int}")]
         public ActionResult Show(int id)
-        {
-            ///TODO!! 
-            ///- проверку на не указанный Ид (типа если вручную вызвали шоу) и если такой картинки не существует
+        {            
             Image img = AppCtx.Images.Where(o => o.Id == id).FirstOrDefault();
             if (img == null)
             {
+                ViewBag.ErrMsg = Resources.Resource.ErrorPhotoNotExist;
                 return View("Error");
             }
             ListPhotoViewModel photoInfo = new ListPhotoViewModel();
@@ -76,6 +80,7 @@ namespace PhotoCommunity.Controllers
             photoInfo.Rate = img.Rate;
             photoInfo.Comments = img.Comments.ToList<Comment>();
             photoInfo.Owner = img.User;
+            photoInfo.Description = img.Description;
             return View(photoInfo);
         }
 
@@ -84,8 +89,8 @@ namespace PhotoCommunity.Controllers
         {
             if (!User.Identity.IsAuthenticated)
             {
-                ViewBag.ErrMsg = "Комментарий оставить может только авторизованный пользователь";
-                return PartialView("test_error");
+                ViewBag.ErrMsg = Resources.Resource.ErrorGuestComment;
+                return Content("error" + Resources.Resource.ErrorGuestComment);
             }
 
             Image img = AppCtx.Images.Where(o => o.Id == imgId).FirstOrDefault();
@@ -95,7 +100,7 @@ namespace PhotoCommunity.Controllers
             {
                 Comment newComment = new Comment();
                 newComment.Text = comment;
-                newComment.Username = AppCtx.Users.Where(o => o.Id == userId).FirstOrDefault().Name;
+                newComment.User = AppCtx.Users.Where(o => o.Id == userId).FirstOrDefault();
                 newComment.Image = img;
                 newComment.Date = DateTime.Now;
                 AppCtx.Comments.Add(newComment);
@@ -117,8 +122,8 @@ namespace PhotoCommunity.Controllers
 
             if (!User.Identity.IsAuthenticated)
             {
-                ViewBag.ErrMsg = "Авторизуйтесь!";
-                return PartialView("test_error");
+                ViewBag.ErrMsg = Resources.Resource.ErrorGuestLike;
+                return Content("error"+Resources.Resource.ErrorGuestLike);
             }
 
             string userId = User.Identity.GetUserId();
@@ -144,12 +149,11 @@ namespace PhotoCommunity.Controllers
             }
             else
             {
-                ViewBag.ErrMsg = "Оценить можно только 1 раз!";
-                return PartialView("test_error");
+                ViewBag.ErrMsg = Resources.Resource.ErrorDoubleLike;
+                return Content("error" + Resources.Resource.ErrorDoubleLike);
             }
 
             return PartialView(img);
         }
-
     }
 }

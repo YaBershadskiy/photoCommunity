@@ -1,18 +1,17 @@
 ﻿@model PhotoCommunity.Models.AdminUsersListViewModel
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = Resources.Resource.TitleDeleteUser;
 }
 
-<h2>Delete</h2>
+<h2>@ViewBag.Title</h2>
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>AspNetUsers</h4>
+<h3>@Resources.Resource.DeleteUserMessage</h3>
+<div id="delete-user-block">
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Resources.Resource.Name
         </dt>
 
         <dd>
@@ -20,7 +19,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Surname)
+            @Resources.Resource.Surname
         </dt>
 
         <dd>
@@ -28,7 +27,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.About)
+            @Resources.Resource.About
         </dt>
 
         <dd>
@@ -36,7 +35,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Email)
+            @Resources.Resource.Email
         </dt>
 
         <dd>
@@ -44,7 +43,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.EmailConfirmed)
+            @Resources.Resource.TitleConfrimEmail
         </dt>
 
         <dd>
@@ -52,7 +51,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.PasswordHash)
+            @Resources.Resource.Password-Hash
         </dt>
 
         <dd>
@@ -60,20 +59,20 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
+            @Resources.Resource.Tel
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>        
+        </dd>
     </dl>
-
-    @using (Html.BeginForm()) {
+    <button class="btn btn-default" onclick="document.getElementById('hidden-link').click();">@Resources.Resource.BackLink</button>
+    <a id="hidden-link" href="@Url.Action("Index","Admin")" hidden="hidden"></a>
+    @using (Html.BeginForm())
+    {
         @Html.AntiForgeryToken()
-
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <input type="submit" value="@Resources.Resource.DeleteSubmitButton" class="btn btn-default" />
         </div>
     }
 </div>

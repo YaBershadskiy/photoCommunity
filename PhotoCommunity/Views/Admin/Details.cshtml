@@ -1,24 +1,23 @@
 ﻿@model PhotoCommunity.Models.AdminUsersListViewModel
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = Resources.Resource.TitleDetails;
 }
 
-<h2>Details</h2>
+<h2>@ViewBag.Title</h2>
 
-<div>
-    <h4>AspNetUsers</h4>
+<div id="details-block">
     <hr />
     <dl class="dl-horizontal">
 
-        <dt>
-            @Html.Raw("<img style='width:150; height:100px;' src=\"data:image/jpg;base64,"
+        <dt></dt>
+        <dd>
+            @Html.Raw("<img src=\"data:image/jpg;base64,"
 + Convert.ToBase64String(Model.Avatar) + "\" />")
-        </dt>
-        <dd></dd>
+        </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Resources.Resource.Name
         </dt>
 
         <dd>
@@ -26,15 +25,15 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Surname)
+            @Resources.Resource.Surname
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.Surname)
         </dd>
 
-       <dt>
-            @Html.DisplayNameFor(model => model.About)
+        <dt>
+            @Resources.Resource.About
         </dt>
 
         <dd>
@@ -42,7 +41,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Email)
+            @Resources.Resource.Email
         </dt>
 
         <dd>
@@ -50,7 +49,7 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.EmailConfirmed)
+            @Resources.Resource.TitleConfrimEmail
         </dt>
 
         <dd>
@@ -58,15 +57,15 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.PasswordHash)
+            @Resources.Resource.Password-Hash
         </dt>
 
         <dd>
             @Html.DisplayFor(model => model.PasswordHash)
-        </dd>        
+        </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
+            @Resources.Resource.Tel
         </dt>
 
         <dd>
@@ -74,7 +73,7 @@
         </dd>
     </dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+<button class="btn btn-default" onclick="document.getElementById('hidden-link').click();">@Resources.Resource.BackLink</button>
+<a id="hidden-link" href="@Url.Action("Index","Admin")" hidden="hidden"></a>
+<button class="btn btn-default" onclick="document.getElementById('hidden-link1').click();">@Resources.Resource.EditLink</button>
+<a id="hidden-link1" href="@Url.Action("Edit","Admin",new { id = Model.Id })" hidden="hidden"></a>

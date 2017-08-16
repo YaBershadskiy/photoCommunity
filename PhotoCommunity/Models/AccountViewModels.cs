@@ -3,63 +3,20 @@ using System.ComponentModel.DataAnnotations;
 using System.Web;
 
 namespace PhotoCommunity.Models
-{
-    public class ExternalLoginConfirmationViewModel
-    {
-        [Required]
-        [Display(Name = "Адрес электронной почты")]
-        public string Email { get; set; }
-    }
-
-    public class ExternalLoginListViewModel
-    {
-        public string ReturnUrl { get; set; }
-    }
-
-    public class SendCodeViewModel
-    {
-        public string SelectedProvider { get; set; }
-        public ICollection<System.Web.Mvc.SelectListItem> Providers { get; set; }
-        public string ReturnUrl { get; set; }
-        public bool RememberMe { get; set; }
-    }
-
-    public class VerifyCodeViewModel
-    {
-        [Required]
-        public string Provider { get; set; }
-
-        [Required]
-        [Display(Name = "Код")]
-        public string Code { get; set; }
-        public string ReturnUrl { get; set; }
-
-        [Display(Name = "Запомнить браузер?")]
-        public bool RememberBrowser { get; set; }
-
-        public bool RememberMe { get; set; }
-    }
-
-    public class ForgotViewModel
-    {
-        [Required]
-        [Display(Name = "Адрес электронной почты")]
-        public string Email { get; set; }
-    }
-
+{   
     public class LoginViewModel
     {
         [Required]
-        [Display(Name = "Адрес электронной почты")]
+        [Display(Name = "Email", ResourceType = typeof(Resources.Resource))]
         [EmailAddress]
         public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        [Display(Name = "Пароль")]
+        [Display(Name = "Password", ResourceType = typeof(Resources.Resource))]
         public string Password { get; set; }
 
-        [Display(Name = "Запомнить меня")]
+        [Display(Name = "RememberMe", ResourceType = typeof(Resources.Resource))]
         public bool RememberMe { get; set; }
     }
 
@@ -67,42 +24,41 @@ namespace PhotoCommunity.Models
     {
         [Required]        
         [DataType(DataType.Text)]
-        [Display(Name = "Имя")]
+        [Display(Name = "Name", ResourceType = typeof(Resources.Resource))]
         public string Name { get; set; }
 
         [Required]
         [DataType(DataType.Text)]
-        [Display(Name = "Фамилия")]
+        [Display(Name = "Surname", ResourceType = typeof(Resources.Resource))]
         public string Surname { get; set; }
 
         [Required]
-        [Display(Name = "Ваш аватар")]
+        [Display(Name = "Avatar", ResourceType = typeof(Resources.Resource))]
         public HttpPostedFileBase Avatar { get; set; }
 
         [Required]
-        [Phone]
-        [Display(Name = "Телефон")]
+        [Phone/*(ErrorMessageResourceType = typeof(Resources.Resource), ErrorMessageResourceName = "ErrorPhoneFormat")*/]
+        [Display(Name = "Tel", ResourceType = typeof(Resources.Resource))]
         public string Tel { get; set; }
 
         [Required]
         [EmailAddress]
-        [Display(Name = "Адрес электронной почты")]
+        [Display(Name = "Email", ResourceType = typeof(Resources.Resource))]
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "Значение {0} должно содержать не менее {2} символов.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessageResourceType = typeof(Resources.Resource), ErrorMessageResourceName = "PasswordSequrity", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Пароль")]
+        [Display(Name = "Password", ResourceType = typeof(Resources.Resource))]
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Подтверждение пароля")]
-        [Compare("Password", ErrorMessage = "Пароль и его подтверждение не совпадают.")]
+        [Display(Name = "PasswordConfrimation", ResourceType = typeof(Resources.Resource))]
+        [Compare("Password", ErrorMessageResourceType = typeof(Resources.Resource), ErrorMessageResourceName = "PasswordsNotEqual")]
         public string ConfirmPassword { get; set; }
 
-        [Required]
         [DataType(DataType.MultilineText)]
-        [Display(Name = "О себе")]
+        [Display(Name = "About", ResourceType = typeof(Resources.Resource))]
         public string About { get; set; }
     }
 
@@ -117,34 +73,13 @@ namespace PhotoCommunity.Models
         public bool EmailConfirmed { get; set; }
         public string PasswordHash { get; set; }
         public string PhoneNumber { get; set; }
-    }
-
-    public class ResetPasswordViewModel
-    {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Адрес электронной почты")]
-        public string Email { get; set; }
-
-        [Required]
-        [StringLength(100, ErrorMessage = "Значение {0} должно содержать не менее {2} символов.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Пароль")]
-        public string Password { get; set; }
-
-        [DataType(DataType.Password)]
-        [Display(Name = "Подтверждение пароля")]
-        [Compare("Password", ErrorMessage = "Пароль и его подтверждение не совпадают.")]
-        public string ConfirmPassword { get; set; }
-
-        public string Code { get; set; }
-    }
+    }   
 
     public class ForgotPasswordViewModel
     {
         [Required]
         [EmailAddress]
-        [Display(Name = "Почта")]
+        [Display(Name = "Email", ResourceType = typeof(Resources.Resource))]
         public string Email { get; set; }
     }
 }
