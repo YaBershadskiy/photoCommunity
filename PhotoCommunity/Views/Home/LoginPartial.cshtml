@@ -34,16 +34,15 @@
                         <li>
                             @Html.ActionLink(Resources.Resource.EditProfile, "Edit", "User")
                         </li>
+                        <li>
+                            @Html.ActionLink(Resources.Resource.ChangePass, "ChangePassword", "User")
+                        </li>
                         @if (User.IsInRole("User"))
                         {
                             <li>
                                 @Html.ActionLink(Resources.Resource.AddPhoto, "Add", "Photo")
                             </li>
                         }
-
-                        <li>
-                            @Html.ActionLink(Resources.Resource.ChangePass, "ChangePassword", "User")
-                        </li>
                         <li>
                             <a href="javascript:document.getElementById('logoutForm').submit()">@Resources.Resource.MenuLogout</a>
                         </li>

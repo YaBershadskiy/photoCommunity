@@ -1,7 +1,6 @@
 ﻿@model PagedList.IPagedList<PhotoCommunity.Models.ListPhotoViewModel>
 @using PagedList.Mvc;
 <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
-@Styles.Render("~/Content/css")
 
 @{
     ViewBag.Title = @Resources.Resource.GalleryTitle;
@@ -22,7 +21,7 @@
             <div class="photo-info">
                 <div class="stat">
                     <span> @Html.DisplayFor(modelItem => item.Date)</span>
-                    <span id="rate">Rate: @Html.DisplayFor(modelItem => item.Rate)</span>
+                    <span id="rate">Rating: @Html.DisplayFor(modelItem => item.Rate)</span>
                 </div>
                 <div class="name">
                     @Html.ActionLink(@Html.DisplayFor(modelItem => item.Name).ToString(), item.Id.ToString(), "Photo",null, htmlAttributes: new { @class = "post-header-link" })

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PagedList;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -44,7 +45,7 @@ namespace PhotoCommunity.Models
 
    public class UserPhotosViewModel
     {
-        public IEnumerable<Image> images { get; set; }
+        public IPagedList<Image> images { get; set; }
         public ApplicationUser user { get; set; }
     }
 }

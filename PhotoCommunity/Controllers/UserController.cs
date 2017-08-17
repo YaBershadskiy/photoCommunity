@@ -74,7 +74,7 @@ namespace PhotoCommunity.Controllers
         [AllowAnonymous]
         [Route("User/{username:regex(^user-)}")]
         [Culture]
-        public ActionResult UserPage(string username, ManageMessageId? message)
+        public ActionResult UserPage(string username, ManageMessageId? message,int? page)
         {
             HttpCookie cookie = Request.Cookies["lang"];
             if (cookie==null)
@@ -105,9 +105,12 @@ namespace PhotoCommunity.Controllers
                 return View("Error");
             }
 
-            IEnumerable<Image> imgs = db.Images.Where(item => item.User.Id == usr.Id);
+            List<Image> imgs = db.Images.Where(item => item.User.Id == usr.Id).ToList<Image>();
             UPmodel.user = usr;
-            UPmodel.images = imgs;
+            int pageSize = 20;
+            int pageNumber = (page ?? 1);
+            UPmodel.images = imgs.ToPagedList<Image>(pageNumber, pageSize);
+           
             return View(UPmodel);
         }
 
