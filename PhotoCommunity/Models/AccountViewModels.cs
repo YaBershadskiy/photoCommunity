@@ -8,7 +8,7 @@ namespace PhotoCommunity.Models
     {
         [Required]
         [Display(Name = "Email", ResourceType = typeof(Resources.Resource))]
-        [EmailAddress]
+        [EmailAddress(ErrorMessageResourceType = typeof(Resources.Resource), ErrorMessageResourceName = "ErrorValidEmail")]
         public string Email { get; set; }
 
         [Required]

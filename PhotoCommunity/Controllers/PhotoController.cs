@@ -50,7 +50,6 @@ namespace PhotoCommunity.Controllers
         [HttpPost]
         public async Task<ActionResult> Add(AddPhotoViewModel model)
         {
-            ///TODO!!!После закгрузки картинки выводить сообщение и очищать поля ввода
             byte[] imageData = null;
             using (var binaryReader = new BinaryReader(model.Img.InputStream))
             {
@@ -87,7 +86,7 @@ namespace PhotoCommunity.Controllers
         [HttpPost]
         public async Task<ActionResult> AddComment(string comment, int imgId)
         {
-            if (!User.Identity.IsAuthenticated)
+            if (!User.IsInRole("User"))
             {
                 ViewBag.ErrMsg = Resources.Resource.ErrorGuestComment;
                 return Content("error" + Resources.Resource.ErrorGuestComment);
@@ -120,12 +119,12 @@ namespace PhotoCommunity.Controllers
                 return View("Error");
             }
 
-            if (!User.Identity.IsAuthenticated)
+            if (!User.IsInRole("User"))
             {
                 ViewBag.ErrMsg = Resources.Resource.ErrorGuestLike;
                 return Content("error"+Resources.Resource.ErrorGuestLike);
             }
-
+            
             string userId = User.Identity.GetUserId();
 
             ApplicationUser user = AppCtx.Users.Where(item => item.Id == userId).FirstOrDefault();
