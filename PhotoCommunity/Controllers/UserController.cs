@@ -105,7 +105,7 @@ namespace PhotoCommunity.Controllers
                 return View("Error");
             }
 
-            List<Image> imgs = db.Images.Where(item => item.User.Id == usr.Id).ToList<Image>();
+            List<Image> imgs = db.Images.Where(item => item.User.Id == usr.Id).OrderByDescending(item => item.Date).ToList<Image>();
             UPmodel.user = usr;
             int pageSize = 20;
             int pageNumber = (page ?? 1);

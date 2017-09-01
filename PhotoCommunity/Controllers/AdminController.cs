@@ -86,6 +86,7 @@ namespace PhotoCommunity.Controllers
         {
             if (ModelState.IsValid)
             {
+                aspNetUsers.UserName = aspNetUsers.Email;
                 db.Entry(aspNetUsers).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -207,7 +208,7 @@ namespace PhotoCommunity.Controllers
                     case "phonenumber":
                         users = users.OrderBy(prop => prop.PhoneNumber).ToList<AdminUsersListViewModel>();
                         break;
-                    case "emailconfrimed":
+                    case "emailconfirmed":
                         users = users.OrderBy(prop => prop.EmailConfirmed).ToList<AdminUsersListViewModel>();
                         break;
                     case "about":
@@ -236,7 +237,7 @@ namespace PhotoCommunity.Controllers
                     case "phonenumber":
                         users = users.OrderByDescending(prop => prop.PhoneNumber).ToList<AdminUsersListViewModel>();
                         break;
-                    case "emailconfrimed":
+                    case "emailconfirmed":
                         users = users.OrderByDescending(prop => prop.EmailConfirmed).ToList<AdminUsersListViewModel>();
                         break;
                     case "about":

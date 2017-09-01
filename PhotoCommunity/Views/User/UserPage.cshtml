@@ -1,0 +1,70 @@
+﻿@model PhotoCommunity.Models.UserPhotosViewModel
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = User.Identity.Name == Model.user.UserName ? @Resources.Resource.TitleMyProfile : Model.user.Name + " " + Model.user.Surname;
+}
+<br />
+<h3 class="text-success">@ViewBag.StatusMessage</h3>
+
+<div class="profile-block">
+    <h1>@Model.user.Name @Model.user.Surname</h1>
+    <div class="center-image" style="background-image:url('data:image/jpg;base64,@Convert.ToBase64String(Model.user.Avatar)');">
+    </div>
+
+    <div class="profile-about">
+        <h4>
+            @Resources.Resource.About
+        </h4>
+        @Html.DisplayFor(user => user.user.About)
+    </div>
+
+    <br />
+
+    @if (User.Identity.Name == Model.user.UserName)
+    {
+        <div id="user-info">
+            @if (User.IsInRole("User"))
+            {
+                @Html.ActionLink(Resources.Resource.TitleAddPhoto, "Add", "Photo")
+                <br />
+            }
+            @Html.ActionLink(Resources.Resource.TitleEditProfile, "Edit")<br />
+            @Html.ActionLink(Resources.Resource.ChangePassLink, "ChangePassword", "User")
+        </div>
+    }
+
+</div>
+<hr />
+
+<div class="gallery-block" id="profile">
+    @foreach (var item in Model.images)
+    {
+        <div class="wall-photo">
+            <div class="photo-body">
+                <a href="@Url.Action(item.Id.ToString(),"Photo")">
+                    <div class="center-image" style="background-image:url('data:image/jpg;base64,@Convert.ToBase64String(item.Img)');">
+                    </div>
+                </a>
+            </div>
+            <div class="photo-info">
+                <div class="stat">
+                    <span> @Html.DisplayFor(modelItem => item.Date)</span>
+                    <span id="rate">Rating: @Html.DisplayFor(modelItem => item.Rate)</span>
+                </div>
+                <div class="name">
+                    @Html.ActionLink(@Html.DisplayFor(modelItem => item.Name).ToString(), item.Id.ToString(), "Photo", null, htmlAttributes: new { @class = "post-header-link" })
+                    @if (User.IsInRole("Admin"))
+                    {
+                        @Html.ActionLink("delete_forever", "DeletePhoto", "Admin", new { photoId = item.Id }, new { @class = "material-icons", @id = "delete-icon" });
+                    }
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@Resources.Resource.Page @(Model.images.PageCount < Model.images.PageNumber ? 0 : Model.images.PageNumber) @Resources.Resource.Of @Model.images.PageCount
+
+@Html.PagedListPager(Model.images, page => Url.Action("user-"+Model.user.Id, new { page }))

@@ -94,7 +94,7 @@ namespace PhotoCommunity.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("", Resources.Resource.ErrorNotConfrimed);
+                        ModelState.AddModelError("", Resources.Resource.ErrorNotConfirmed);
                     }
                 }
                 else
@@ -137,7 +137,7 @@ namespace PhotoCommunity.Controllers
                     // Отправка сообщения электронной почты с этой ссылкой
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    await UserManager.SendEmailAsync(user.Id, Resources.Resource.MailConfrimationHeader, Resources.Resource.MailConfrimationBody + callbackUrl + Resources.Resource.Here);
+                    await UserManager.SendEmailAsync(user.Id, Resources.Resource.MailConfirmationHeader, Resources.Resource.MailConfirmationBody + callbackUrl + Resources.Resource.Here);
 
                     return View("DisplayEmail");
                 }

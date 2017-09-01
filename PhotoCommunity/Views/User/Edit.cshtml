@@ -1,0 +1,72 @@
+﻿@model PhotoCommunity.Models.EditProfileViewModel
+@Styles.Render("~/Content/css")
+
+@{
+    ViewBag.Title = Resources.Resource.TitleEditProfile;
+}
+<h2>@ViewBag.Title</h2>
+<hr />
+
+@using (Html.BeginForm("Edit", "User", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary("", new { @class = "text-danger" })
+
+    <div class="edit-block">
+        <div class="form-group">
+            <label class="col-md-2 control-label"></label>
+            <div class="col-md-10" style="text-align:center;">
+                <div class="center-image" style="background-image:url('data:image/jpg;base64,@Convert.ToBase64String(Model.Avatar)');"></div>
+            </div>
+            <label class="col-md-2 control-label"></label>
+            <div class="col-md-10">
+                <input id="uploadFile" class="form-control" placeholder="@Resources.Resource.ChosePhoto" disabled="disabled" />
+                <input type="button" class="form-control" style="margin-top:10px" value="@Resources.Resource.EditProfileChangeAvatar..." onclick="document.getElementById('file-button').click();" />
+                <input type="file" id="file-button" name="uploadImage" accept = "image/*" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Surname, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Surname, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Tel, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Tel, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.About, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.About, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="@Resources.Resource.SaveLink" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+<br />
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/ui")
+}

@@ -50,7 +50,7 @@ namespace PhotoCommunity.Models
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "NewPasswordConfrim", ResourceType = typeof(Resources.Resource))]
+        [Display(Name = "NewPasswordConfirm", ResourceType = typeof(Resources.Resource))]
         [Compare("NewPassword", ErrorMessageResourceType = typeof(Resources.Resource), ErrorMessageResourceName = "PasswordsNotEqual")]
         public string ConfirmPassword { get; set; }
     }

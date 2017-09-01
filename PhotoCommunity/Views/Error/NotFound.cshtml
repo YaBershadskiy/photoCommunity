@@ -1,0 +1,25 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    <div style="text-align:center;margin-top:70px">
+        @{
+            ViewBag.Title = Resources.Resource.TitleNotFound;
+        }
+        <img src="~/Images/broken_camera.png" width="300" style="opacity:0.8" />
+        <h1>@Resources.Resource.NotFoundMessage</h1>
+        <div>
+            @Html.ActionLink("← "+Resources.Resource.MainPageLink, "", "Photo",null, new { @id="back-link"})
+        </div>
+    </div>
+</body>
+</html>

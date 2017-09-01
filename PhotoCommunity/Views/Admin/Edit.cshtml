@@ -14,6 +14,7 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.Avatar)
 
         <div class="form-group">
             <label class = "control-label col-md-2">@Resources.Resource.Name</label>
@@ -48,7 +49,7 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label col-md-2">@Resources.Resource.TitleConfrimEmail</label>
+            <label class="control-label col-md-2">@Resources.Resource.TitleConfirmEmail</label>
             <div class="col-md-10">
                 <div class="checkbox">
                     @Html.EditorFor(model => model.EmailConfirmed)
